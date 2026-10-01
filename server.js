@@ -65,4 +65,10 @@ app.listen(3000, () => {
     console.log(`Server running on port 3000`);
 });
 
-//create object cache
+// const database = require('./database/productDatabase');
+
+// database.readProducts().then(data => {
+//     console.log(data);
+// });
+
+
