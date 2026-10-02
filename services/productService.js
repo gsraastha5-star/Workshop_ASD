@@ -7,23 +7,32 @@ async function getProducts() {
 async function getProductById(id) {
     const products = await database.readProducts();
 
-    return products.find(product => product.id == id);
+    return products.find(product => String(product.id) === String(id));
 }
 
 async function addProduct(product) {
     const products = await database.readProducts();
 
-    products.push(product);
+    const newId = product.id
+        ? Number(product.id)
+        : (products.length > 0 ? Math.max(...products.map(p => Number(p.id) || 0)) + 1 : 1);
+
+    const newProduct = {
+        id: newId,
+        ...product
+    };
+
+    products.push(newProduct);
 
     await database.writeProducts(products);
 
-    return product;
+    return newProduct;
 }
 
 async function updateProduct(id, updatedProduct) {
     const products = await database.readProducts();
 
-    const index = products.findIndex(product => product.id == id);
+    const index = products.findIndex(product => String(product.id) === String(id));
 
     if (index === -1) {
         return null;
@@ -31,7 +40,8 @@ async function updateProduct(id, updatedProduct) {
 
     products[index] = {
         ...products[index],
-        ...updatedProduct
+        ...updatedProduct,
+        id: products[index].id
     };
 
     await database.writeProducts(products);
@@ -42,7 +52,7 @@ async function updateProduct(id, updatedProduct) {
 async function deleteProduct(id) {
     const products = await database.readProducts();
 
-    const index = products.findIndex(product => product.id == id);
+    const index = products.findIndex(product => String(product.id) === String(id));
 
     if (index === -1) {
         return null;
