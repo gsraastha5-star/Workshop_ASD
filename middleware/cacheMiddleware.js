@@ -23,6 +23,14 @@ function cacheMiddleware(req, res, next) {
 
     res.set('X-Cache', 'MISS');
 
+    const originalJson = res.json.bind(res);
+    res.json = (body) => {
+        if (res.statusCode >= 200 && res.statusCode < 300 && body !== undefined) {
+            setCache(key, body);
+        }
+        return originalJson(body);
+    };
+
     next();
 }
 

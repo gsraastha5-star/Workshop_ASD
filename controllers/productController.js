@@ -1,7 +1,6 @@
 const productService = require('../services/productService');
 
 const {
-    setCache,
     clearCache
 } = require('../middleware/cacheMiddleware');
 
@@ -9,8 +8,6 @@ const {
 async function getProducts(req, res) {
     try {
         const products = await productService.getProducts();
-
-        setCache(req.originalUrl, products);
 
         res.json(products);
 
@@ -35,8 +32,6 @@ async function getProductById(req, res) {
                 error: "Product not found"
             });
         }
-
-        setCache(req.originalUrl, product);
 
         res.json(product);
 
